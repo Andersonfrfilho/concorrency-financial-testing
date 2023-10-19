@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  financial-database:
+    image: postgres:15.3-alpine
+    container_name: financial-database
+    volumes:
+      - .:/app
+    ports:
+      - '${DATABASE_PORT}:${DATABASE_PORT}'
+    command: -p ${DATABASE_PORT}
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_USER=${DATABASE_USERNAME}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_PORT=${DATABASE_PORT}
+volumes:
+  redis:
+    driver: local
