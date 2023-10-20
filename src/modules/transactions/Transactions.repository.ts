@@ -18,13 +18,15 @@ export class TransactionsRepository {
     private transactionBlocksRepository: Repository<TransactionBlocks>,
   ) {}
   async save(props: Partial<Transaction>): Promise<Transaction> {
-    return this.transactionRepository.save(props);
+    const transaction = this.transactionRepository.create(props);
+    await this.transactionRepository.save(transaction);
+    return transaction;
   }
 
   async createBlock(
     props: Partial<TransactionBlocks>,
   ): Promise<TransactionBlocks> {
-    return this.transactionBlocksRepository.save(props);
+    return this.transactionBlocksRepository.save({});
   }
 
   async updateBlock(props: Partial<TransactionBlocks>): Promise<void> {

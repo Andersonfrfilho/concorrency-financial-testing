@@ -7,6 +7,7 @@ import {
   TRANSACTION_REPOSITORY,
   TransactionsRepository,
 } from './modules/transactions/Transactions.repository';
+import { connectionSource } from 'ormconfig';
 interface ParamsCreateTransactionDto {
   amount: number;
   account_id: string;
@@ -23,49 +24,43 @@ export class AppService {
   ) {}
 
   async createAccount(): Promise<void> {
-    await this.accountRepository.save({
-      balance: 100,
-      number: 'db6dfb1d-9b2a-4cba-a104-5b67446531ad',
-    });
+    try {
+      await this.accountRepository.save({
+        balance: 100,
+        limit_account: -30,
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   async createTransactions(data: ParamsCreateTransactionDto): Promise<void> {
-    // if (!connectionSource.isInitialized) {
-    //   connectionSource.initialize();
-    // }
-    let transaction, block;
-    // const queryRunner = connectionSource.createQueryRunner();
-    const sumBlocks = await this.accountRepository.getAccountSumActiveBlocks({
-      id: data.account_id,
-    });
-    console.log('############');
-    const account = await this.accountRepository.get({ id: data.account_id });
-
-    if (data.type === 'debit' && sumBlocks + data.amount >= account.balance) {
-      throw new Error('Insufficient Founds');
+    if (!connectionSource.isInitialized) {
+      connectionSource.initialize();
     }
+    let transaction, block;
+    const queryRunner = connectionSource.createQueryRunner();
+    // const sumBlocks = await this.accountRepository.getAccountSumActiveBlocks({
+    //   id: data.account_id,
+    // });
+    const account = await this.accountRepository.get({ id: data.account_id });
+    // if (data.type === 'debit' && data.amount >= account.balance) {
+    //   throw new Error('Insufficient Founds');
+    // }
 
     try {
-      transaction = await this.transactionRepository.save({
-        account_id: account.id,
-        amount: data.amount,
-        description: 'description transactions',
-      });
-
-      await this.transactionRepository.createEvents({
-        transaction_id: transaction.id,
-        amount: data.amount,
-        type: 'create',
-        description: 'description transactions',
-      });
-
-      block = await this.transactionRepository.createBlock({
-        amount: data.amount,
-        transaction_id: transaction.id,
-        description: 'description transactions',
-        active: true,
-      });
-
+      // await this.transactionRepository.save({
+      //   account_id: data.account_id,
+      //   amount: data.amount,
+      //   description: 'description transactions',
+      // });
+      // await this.transactionRepository.createEvents({
+      //   transaction_id: transaction.id,
+      //   amount: data.amount,
+      //   type: 'create',
+      //   description: 'description transactions',
+      // });
+      await queryRunner.startTransaction('REPEATABLE READ');
       await this.accountRepository.updateBalance({
         balance:
           data.type === 'debit'
@@ -73,34 +68,17 @@ export class AppService {
             : account.balance + data.amount,
         id: account.id,
       });
-
-      await this.transactionRepository.createEvents({
-        transaction_id: transaction.id,
-        amount: data.amount,
-        type: 'done',
-        description: 'description transactions',
-      });
+      await queryRunner.commitTransaction();
+      console.log('Passow');
+      // await this.transactionRepository.createEvents({
+      //   transaction_id: transaction.id,
+      //   amount: data.amount,
+      //   type: 'done',
+      //   description: 'description transactions',
+      // });
     } catch (error) {
-      if (transaction) {
-        await this.transactionRepository.createEvents({
-          transaction_id: transaction.id,
-          amount: transaction.amount,
-          type: 'error',
-          description: 'error',
-        });
-        await this.transactionRepository.update({
-          id: transaction.id,
-          description: 'Error',
-        });
-      }
+      await queryRunner.rollbackTransaction();
       throw Error(error);
-    } finally {
-      if (block) {
-        await this.transactionRepository.updateBlock({
-          active: false,
-          id: block.id,
-        });
-      }
     }
   }
 }

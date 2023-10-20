@@ -7,7 +7,11 @@ export const connectionSource = new DataSource({
   username: 'financial',
   password: '102030',
   database: 'financial_db',
-  entities: ['src/**/**.entity{.ts,.js}', 'dist/**/*.entity{.ts,.js}'],
-  migrations: ['src/**/**.migration{.ts,.js}'],
-  synchronize: true,
+  logging: true,
+  entities: [
+    //'src/**/**.entity{.ts,.js}',
+    'dist/**/*.entity{.ts,.js}',
+  ],
+  // migrations: ['src/**/**.migration{.ts,.js}'],
+  synchronize: false,
 });

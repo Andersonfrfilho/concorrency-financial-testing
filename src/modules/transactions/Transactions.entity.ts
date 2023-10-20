@@ -11,7 +11,7 @@ import { TransactionBlocks } from './TransactionsBlocks.entity';
 
 @Entity('transactions')
 export class Transaction {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
@@ -20,7 +20,7 @@ export class Transaction {
   @Column()
   description: string;
 
-  @Column()
+  @Column({ name: 'account_id' })
   account_id: string;
 
   @ManyToOne(() => Account, (account) => account.transactions)

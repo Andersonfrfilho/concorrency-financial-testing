@@ -1,16 +1,23 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  Check,
+} from 'typeorm';
 import { Transaction } from '../transactions/Transactions.entity';
 
 @Entity('accounts')
 export class Account {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
-  number: string;
+  // @Check('balance >= "limit_account"')
+  balance: number;
 
   @Column()
-  balance: number;
+  limit_account: number;
 
   @OneToMany(() => Transaction, (transaction) => transaction.account)
   transactions: Transaction[];

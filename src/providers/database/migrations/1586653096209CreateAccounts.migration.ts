@@ -14,12 +14,19 @@ export class CreateAccounts1586653096209 implements MigrationInterface {
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'number',
-            type: 'uuid',
-          },
-          {
             name: 'balance',
             type: 'bigint',
+          },
+          {
+            name: 'limit_account',
+            type: 'bigint',
+          },
+        ],
+        checks: [
+          {
+            name: 'verifyValueLimitByBalance',
+            columnNames: ['balance'],
+            expression: 'balance >= "limit_account"',
           },
         ],
       }),

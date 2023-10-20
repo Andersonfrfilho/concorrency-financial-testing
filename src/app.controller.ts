@@ -10,13 +10,13 @@ export class AppController {
     return this.appService.createAccount();
   }
 
-  @Post('/:accountId/transaction')
+  @Post('/:account_id/transaction')
   async createTransaction(
-    @Param('accountId') accountId: any,
+    @Param('account_id') account_id: any,
     @Body() body: any,
   ): Promise<void> {
     return this.appService.createTransactions({
-      account_id: accountId,
+      account_id,
       amount: body.amount,
       type: body.type,
     });

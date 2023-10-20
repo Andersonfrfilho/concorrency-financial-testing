@@ -3,7 +3,7 @@ import { Transaction } from './Transactions.entity';
 
 @Entity('transactions_events')
 export class TransactionEvents {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()

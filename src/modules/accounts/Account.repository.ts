@@ -27,9 +27,14 @@ export class AccountRepository {
   }
 
   async updateBalance(props: UpdatePropsDto): Promise<void> {
-    await this.accountRepository.update(props.id, {
-      balance: props.balance,
-    });
+    await this.accountRepository
+      .update(props.id, {
+        balance: props.balance,
+      })
+      .then((ee) => {
+        console.log(ee);
+      })
+      .catch((err) => console.log(err));
   }
 
   async getAccountSumActiveBlocks(props: Partial<Account>): Promise<number> {
