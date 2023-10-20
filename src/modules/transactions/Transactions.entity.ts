@@ -20,21 +20,21 @@ export class Transaction {
   @Column()
   description: string;
 
-  @Column({ name: 'account_id' })
+  @Column()
   account_id: string;
 
-  @ManyToOne(() => Account, (account) => account.transactions)
-  account: Account;
+  // @ManyToOne(() => Account, (account) => account.transactions)
+  // account: Account;
 
-  @OneToMany(
-    () => TransactionEvents,
-    (transactionEvents) => transactionEvents.transaction,
-  )
-  events: TransactionEvents[];
+  // @OneToMany(
+  //   () => TransactionEvents,
+  //   (transactionEvents) => transactionEvents.transaction,
+  // )
+  // events: TransactionEvents[];
 
-  @OneToMany(
-    () => TransactionBlocks,
-    (transactionBlocks) => transactionBlocks.transaction,
-  )
-  blocks: TransactionBlocks[];
+  // @OneToMany(
+  //   () => TransactionBlocks,
+  //   (transactionBlocks) => transactionBlocks.transaction,
+  // )
+  // blocks: TransactionBlocks[];
 }

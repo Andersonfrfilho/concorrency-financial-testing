@@ -18,6 +18,6 @@ export class TransactionEvents {
   @Column()
   transaction_id: string;
 
-  @ManyToOne(() => Transaction, (transaction) => transaction.blocks)
-  transaction: Transaction;
+  // @ManyToOne(() => Transaction, (transaction) => transaction.blocks)
+  // transaction: Transaction;
 }

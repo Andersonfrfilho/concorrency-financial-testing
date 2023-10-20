@@ -19,6 +19,6 @@ export class Account {
   @Column()
   limit_account: number;
 
-  @OneToMany(() => Transaction, (transaction) => transaction.account)
-  transactions: Transaction[];
+  // @OneToMany(() => Transaction, (transaction) => transaction.account)
+  // transactions: Transaction[];
 }

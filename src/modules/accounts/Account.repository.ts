@@ -50,17 +50,17 @@ export class AccountRepository {
       return 0;
     }
 
-    const sumValue = account.transactions.reduce(
-      (accumulatorTransaction: number, transaction: Transaction) =>
-        accumulatorTransaction +
-        transaction.blocks.reduce(
-          (accumulatorBlock: number, block: TransactionBlocks) =>
-            accumulatorBlock + block.amount,
-          0,
-        ),
-      0,
-    );
+    // const sumValue = account.transactions.reduce(
+    //   (accumulatorTransaction: number, transaction: Transaction) =>
+    //     accumulatorTransaction +
+    //     transaction.blocks.reduce(
+    //       (accumulatorBlock: number, block: TransactionBlocks) =>
+    //         accumulatorBlock + block.amount,
+    //       0,
+    //     ),
+    //   0,
+    // );
 
-    return sumValue;
+    return 0;
   }
 }

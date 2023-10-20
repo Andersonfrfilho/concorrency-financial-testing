@@ -8,6 +8,8 @@ import {
   TransactionsRepository,
 } from './modules/transactions/Transactions.repository';
 import { connectionSource } from 'ormconfig';
+import { Account } from './modules/accounts/Account.entity';
+import { Transaction } from './modules/transactions/Transactions.entity';
 interface ParamsCreateTransactionDto {
   amount: number;
   account_id: string;
@@ -60,13 +62,18 @@ export class AppService {
       //   type: 'create',
       //   description: 'description transactions',
       // });
-      await queryRunner.startTransaction('REPEATABLE READ');
-      await this.accountRepository.updateBalance({
+      await queryRunner.startTransaction('SERIALIZABLE');
+      await queryRunner.manager.update(Account, account.id, {
         balance:
           data.type === 'debit'
             ? account.balance - data.amount
             : account.balance + data.amount,
         id: account.id,
+      });
+      await queryRunner.manager.save(Transaction, {
+        amount: data.amount,
+        account_id: account.id,
+        description: 'anyValue',
       });
       await queryRunner.commitTransaction();
       console.log('Passow');
